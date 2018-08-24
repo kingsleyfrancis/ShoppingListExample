@@ -2,10 +2,11 @@ var gulp = require("gulp"),
     buffer = require("vinyl-buffer"),
     source = require("vinyl-source-stream"),
     babelify = require("babelify"),
+    del = require("del"),
     browserify = require("browserify");
 
     gulp.task("clean", function(){
-        return del("dist");
+        return del("dist/");
     })
 
 
@@ -17,4 +18,8 @@ var gulp = require("gulp"),
         .bundle()
         .pipe(source("bundle.js"))
         .pipe(gulp.dest("dist"));
+    });
+
+    gulp.task("default", function(){
+        gulp.watch("source/AnimatedShoppingList.js", ["build"]);
     });

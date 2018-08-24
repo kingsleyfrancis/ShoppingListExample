@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Animatted Shopping List</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
+    <style type="text/css">
         input{
             padding: 5px;
             width: 120px;
@@ -26,10 +26,20 @@
             transform: translateX(-250px);
         }
 
-        .example-enter.example-enter-active{
+        .example-enter-done{
             opacity: 1;
             transform: translateX(0);
             transition: 0.3s;
+        }
+
+        .example-exit{
+            opacity: 1;
+            transform: translateX(0);
+            transform: 0.3s;
+        }
+        .example-exit-done{
+            opacity: 0;
+            transform: translateX(-250px);
         }
     </style>
 </head>

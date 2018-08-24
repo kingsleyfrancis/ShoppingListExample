@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
-import { render } from "react-dom";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import PropTypes from "prop-types";
+import ReactDOM, { render } from "react-dom";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 export default class AnimatedShoppingList extends Component {
     constructor(){
         super(...arguments);
-        this.stae = {
+        this.state = {
             items: [
                 {id: 1, name: 'Milk'},
                 {id:2, name: 'Yogurt'},
                 {id:3, name: 'Orange Juice'}
-            ]
+            ],
+            newItem : ""
         };
     }
 
@@ -23,45 +25,55 @@ export default class AnimatedShoppingList extends Component {
             //crate a new array with the previous items plus the value the user typed
             let newItems = this.state.items.concat(newItem);
 
-            //Clear the text field
-            evt.target.value = "";
-
             //set the new state
-            this.setState({items: newItems});
+            this.setState({items: newItems, newItem: ""});
         }
     }
+
 
     //Called when the user clicks on a shopping item.
     handleRemove(i){
         //Create a new array without the clicked item
-        let newItems = Object.assign({}, this.state.items);
+        let newItems = Object.assign([], this.state.items);
         newItems.splice(i, 1);
 
         //set the new state
         this.setState({items: newItems});
     }
 
+    changeInput(evt){
+        let text = evt.target.value;
+        this.setState({newItem: text});
+    }
+
     render() {
-        let shoppingItems = this.state.items.map((item, i) => (
-            <div key={item.id}
-            className="item"
-            onClick={this.handleRemove.bind(this, i)}>{item.name}</div>
-        ));
+        let shoppingItems = this.state.items.map((item, i) => {
+                return (
+                    <CSSTransition classNames="example"
+                        timeout={300}
+                        unmountOnExit
+                        key={item.id}>
+                            <div className="item" onClick={this.handleRemove.bind(this, i)}>{item.name}</div>                
+                </CSSTransition>
+            );
+        });
 
         return (
             <div>
-                <CSSTransitionGroup 
-                    transitionName="example"
-                    transitionEnterTimeout={300}
-                    transitionLeaveTimeout={300}
-                    transitionAppear={true}
-                    transitionAppearTimeout={300}>
-                {shoppingItems}
-                </CSSTransitionGroup>
-                <input type="text" value={this.state.newItem} onKeyDown={this.handleChange.bind(this)} />
+                <TransitionGroup>                    
+                    {shoppingItems}
+                </TransitionGroup>
+                <input type="text" value={this.state.newItem} 
+                    onKeyDown={this.handleChange.bind(this)}
+                    onChange={this.changeInput.bind(this)}
+                    placeholder="Enter an item" />
             </div>
         );
     }
-};
+}
 
+AnimatedShoppingList.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.object),
+    newItem: PropTypes.string
+};
 render(<AnimatedShoppingList />, document.getElementById("root"));
